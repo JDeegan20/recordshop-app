@@ -20,4 +20,19 @@ class RecordAPI {
         }
     }
 
+    fun numberOfRecords(): Int {
+        return records.size
+    }
+
+    fun findRecord(index: Int): Record? {
+        return if (isValidListIndex(index, records)) {
+            records[index]
+        } else null
+    }
+
+
+    fun isValidListIndex(index: Int, list: List<Any>): Boolean {
+        return (index >= 0 && index < list.size)
+    }
+
 }
