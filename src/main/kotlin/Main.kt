@@ -1,10 +1,16 @@
+import controllers.RecordAPI
+import models.Record
 import mu.KotlinLogging
 import utils.ScannerInput
+import utils.ScannerInput.readNextInt
+import utils.ScannerInput.readNextLine
 
 import java.lang.System.exit
 
 
 private val logger = KotlinLogging.logger {}
+
+private val recordAPI = RecordAPI()
 
 fun main(args: Array<String>) {
     runMenu()
@@ -42,11 +48,21 @@ fun runMenu() {
 }
 
 fun addRecord(){
-    logger.info { "addRecord() function invoked" }
+
+    val recordName = readNextLine("Enter a name for the record: ")
+    val recordCost = readNextInt("Enter a cost: ")
+    val recordGenre = readNextLine("Enter a genre for the record: ")
+    val isAdded = recordAPI.add(Record(recordName, recordCost, recordGenre, false))
+
+    if (isAdded) {
+        println("Added Successfully")
+    } else {
+        println("Add Failed")
+    }
 }
 
 fun listRecords(){
-    logger.info { "listRecords() function invoked" }
+    println(recordAPI.listAllRecords())
 }
 
 fun updateRecord(){
