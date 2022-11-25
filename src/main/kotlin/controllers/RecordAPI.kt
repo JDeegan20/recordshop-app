@@ -20,8 +20,31 @@ class RecordAPI {
         }
     }
 
+    fun listActiveRecords(): String {
+
+    }
+
+    fun listOwnedRecords(): String {
+
+    }
+
+    fun numberOfOwnedRecords(): Int {
+    }
+
+    fun numberOfActiveRecords(): Int {
+
+    }
+
     fun numberOfRecords(): Int {
         return records.size
+    }
+
+
+    fun listRecordsBySelectedCost(cost: Int): String {
+    }
+
+    fun numberOfRecordsByCost(): Int {
+
     }
 
     fun findRecord(index: Int): Record? {
