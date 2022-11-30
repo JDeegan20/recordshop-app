@@ -71,7 +71,19 @@ fun updateRecord(){
 }
 
 fun deleteRecord(){
-    logger.info { "deleteRecord() function invoked" }
+    //logger.info { "deleteRecord() function invoked" }
+    listRecords()
+    if (recordAPI.numberOfRecords() > 0) {
+        //only ask the user to choose the note to delete if notes exist
+        val indexToDelete = readNextInt("Enter the index of the record to delete: ")
+        //pass the index of the note to NoteAPI for deleting and check for success.
+        val recordToDelete = recordAPI.deleteRecord(indexToDelete)
+        if (recordToDelete != null) {
+            println("Delete Successful! Deleted record: ${recordToDelete.recordName}")
+        } else {
+            println("Delete has not been successful")
+        }
+    }
 }
 
 fun exitApp(){
