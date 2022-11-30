@@ -1,8 +1,8 @@
 package models
 
-data class Record(val recordName: String,
-                val recordCost: Int,
-                val recordGenre: String,
-                val isRecordOwned :Boolean
+data class Record(var recordName: String,
+                var recordCost: Int,
+                var recordGenre: String,
+                var isRecordOwned :Boolean
                 ){
 }

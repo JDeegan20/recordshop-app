@@ -14,6 +14,19 @@ class RecordAPI {
         } else null
     }
 
+    fun updateRecord(indexToUpdate: Int, record: Record?): Boolean {
+        val foundRecord = findRecord(indexToUpdate)
+
+        if ((foundRecord != null) && (record != null)) {
+            foundRecord.recordName = record.recordName
+            foundRecord.recordCost = record.recordCost
+            foundRecord.recordGenre = record.recordGenre
+            return true
+        }
+
+        return false
+    }
+
     fun listAllRecords(): String {
         return if (records.isEmpty()) {
             "No records stored"
@@ -120,6 +133,10 @@ class RecordAPI {
 
     fun isValidListIndex(index: Int, list: List<Any>): Boolean {
         return (index >= 0 && index < list.size)
+    }
+
+    fun isValidIndex(index: Int) :Boolean{
+        return isValidListIndex(index, records);
     }
 
 }
