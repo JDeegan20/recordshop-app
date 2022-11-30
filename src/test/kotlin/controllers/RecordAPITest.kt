@@ -187,4 +187,29 @@ class RecordAPITest {
             assertEquals(3, populatedRecords!!.numberOfRecords())
         }
     }
+    @Nested
+    inner class UpdateRecords {
+        @Test
+        fun `updating a record that does not exist returns false`(){
+            assertFalse(populatedRecords!!.updateRecord(6, Record("Back in Black", 50, "Metal", false)))
+            assertFalse(populatedRecords!!.updateRecord(1, Record("Graduation", 30, "Hip-Hop", false)))
+            assertFalse(emptyRecords!!.updateRecord(0, Record("Loud", 40, "Pop", false)))
+        }
+
+        @Test
+        fun `updating a note that exists returns true and updates`() {
+
+            assertEquals(dizzeeRascal, populatedRecords!!.findRecord(4))
+            assertEquals("Dizzee Rascal", populatedRecords!!.findRecord(4)!!.recordName)
+            assertEquals(3, populatedRecords!!.findRecord(4)!!.recordCost)
+            assertEquals("Grime", populatedRecords!!.findRecord(4)!!.recordGenre)
+
+            //update note 5 with new information and ensure contents updated successfully
+            assertTrue(populatedRecords!!.updateRecord(4, Record("Boy in Da Corner", 30, "Grime", true)))
+            assertEquals("Boy in Da Corner", populatedRecords!!.findRecord(4)!!.recordName)
+            assertEquals(30, populatedRecords!!.findRecord(4)!!.recordCost)
+            assertEquals("Electronic", populatedRecords!!.findRecord(4)!!.recordGenre)
+        }
+    }
+
 }

@@ -67,7 +67,25 @@ fun listRecords(){
 }
 
 fun updateRecord(){
-    logger.info { "updateRecord() function invoked" }
+    listRecords()
+    if (recordAPI.numberOfRecords() > 0) {
+
+        val indexToUpdate = readNextInt("Enter the index of the record to update: ")
+        if (recordAPI.isValidIndex(indexToUpdate)) {
+            val recordName = readNextLine("Enter a name for the record: ")
+            val recordCost = readNextInt("Enter the cost : ")
+            val recordGenre = readNextLine("Enter the genre of the record: ")
+
+            //pass the index of the note and the new note details to NoteAPI for updating and check for success.
+            if (recordAPI.updateRecord(indexToUpdate, Record(recordName, recordCost, recordGenre, false))){
+                println("Update Successful")
+            } else {
+                println("Update Failed")
+            }
+        } else {
+            println("There are no records for this index number")
+        }
+    }
 }
 
 fun deleteRecord(){
