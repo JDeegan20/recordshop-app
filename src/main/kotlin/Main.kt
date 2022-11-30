@@ -19,7 +19,8 @@ fun main(args: Array<String>) {
 fun mainMenu() : Int {
     return ScannerInput.readNextInt(""" 
          > ----------------------------------
-         > |        Record Shop App         |
+         > |       Welcome to Josh's        |
+         > |          Record Shop           |
          > ----------------------------------
          > | Record Menu                    |
          > |   1) Add a record              |

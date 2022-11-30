@@ -112,7 +112,7 @@ class RecordAPITest {
         }
 
         @Test
-        fun `listOwnedNotes returns no owned notes when ArrayList is empty`() {
+        fun `listOwnedRecords returns no owned records when ArrayList is empty`() {
             assertEquals(0, emptyRecords!!.numberOfOwnedRecords())
             assertTrue(
                 emptyRecords!!.listOwnedRecords().lowercase().contains("no owned records")

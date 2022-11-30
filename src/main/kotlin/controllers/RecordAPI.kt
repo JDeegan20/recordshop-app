@@ -21,18 +21,19 @@ class RecordAPI {
     }
 
     fun listActiveRecords(): String {
-
+        return ""
     }
 
     fun listOwnedRecords(): String {
-
+        return ""
     }
 
     fun numberOfOwnedRecords(): Int {
+        return 0
     }
 
     fun numberOfActiveRecords(): Int {
-
+        return 0
     }
 
     fun numberOfRecords(): Int {
@@ -41,10 +42,11 @@ class RecordAPI {
 
 
     fun listRecordsBySelectedCost(cost: Int): String {
+        return ""
     }
 
     fun numberOfRecordsByCost(): Int {
-
+        return 0
     }
 
     fun findRecord(index: Int): Record? {
