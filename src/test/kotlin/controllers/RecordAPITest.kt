@@ -2,8 +2,7 @@ package controllers
 
 import models.Record
 import org.junit.jupiter.api.AfterEach
-import org.junit.jupiter.api.Assertions.assertFalse
-import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
@@ -168,5 +167,24 @@ class RecordAPITest {
             assertFalse(cost4String.contains("Pink Floyd"))
         }
 
+    }
+
+    @Nested
+    inner class DeleteRecords {
+        @Test
+        fun `deleting a record that does not exist, returns null`() {
+            assertNull(emptyRecords!!.deleteRecord(0))
+            assertNull(populatedRecords!!.deleteRecord(1))
+            assertNull(populatedRecords!!.deleteRecord(5))
+        }
+
+        @Test
+        fun `deleting a record that exists delete and returns deleted object`() {
+            assertEquals(5, populatedRecords!!.numberOfRecords())
+            assertEquals(dizzeeRascal, populatedRecords!!.deleteRecord(4))
+            assertEquals(4, populatedRecords!!.numberOfRecords())
+            assertEquals(daftPunk, populatedRecords!!.deleteRecord(0))
+            assertEquals(3, populatedRecords!!.numberOfRecords())
+        }
     }
 }

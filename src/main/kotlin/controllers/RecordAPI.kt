@@ -8,6 +8,12 @@ class RecordAPI {
         return records.add(record)
     }
 
+    fun deleteRecord(indexToDelete: Int): Record? {
+        return if (isValidListIndex(indexToDelete, records)) {
+            records.removeAt(indexToDelete)
+        } else null
+    }
+
     fun listAllRecords(): String {
         return if (records.isEmpty()) {
             "No records stored"
@@ -21,19 +27,52 @@ class RecordAPI {
     }
 
     fun listActiveRecords(): String {
-        return ""
+        return if (numberOfActiveRecords() == 0) {
+            "No active records are stored"
+        } else {
+            var listOfActiveRecords = ""
+            for (record in records) {
+                if (!record.isRecordOwned) {
+                    listOfActiveRecords += "${records.indexOf(record)}: $record \n"
+                }
+            }
+            listOfActiveRecords
+        }
     }
 
     fun listOwnedRecords(): String {
-        return ""
+        return if (numberOfOwnedRecords() == 0) {
+            "No owned records are stored"
+        } else {
+            var listOfOwnedRecords = ""
+            for (record in records) {
+                if (record.isRecordOwned) {
+                    listOfOwnedRecords += "${records.indexOf(record)}: $record \n"
+                }
+            }
+            listOfOwnedRecords
+        }
     }
 
     fun numberOfOwnedRecords(): Int {
-        return 0
+        var counter = 0
+        for (record in records) {
+            if (record.isRecordOwned) {
+                counter++
+            }
+        }
+        return counter
+
     }
 
     fun numberOfActiveRecords(): Int {
-        return 0
+        var counter = 0
+        for (record in records) {
+            if (!record.isRecordOwned) {
+                counter++
+            }
+        }
+        return counter
     }
 
     fun numberOfRecords(): Int {
@@ -42,11 +81,34 @@ class RecordAPI {
 
 
     fun listRecordsBySelectedCost(cost: Int): String {
-        return ""
+        return if (records.isEmpty()) {
+            "No records "
+        } else {
+            var listOfRecords = ""
+            for (i in records.indices) {
+                if (records[i].recordCost == cost) {
+                    listOfRecords +=
+                        """$i: ${records[i]}
+                        """.trimIndent()
+                }
+            }
+            if (listOfRecords.equals("")) {
+                "No records with cost: $cost"
+            } else {
+                "${numberOfRecordsByCost(cost)} records of cost $cost: $listOfRecords"
+            }
+        }
     }
 
-    fun numberOfRecordsByCost(): Int {
-        return 0
+    fun numberOfRecordsByCost(cost: Int): Int {
+        var counter = 0
+        for (record in records) {
+            if (record.recordCost == cost) {
+                counter++
+            }
+        }
+        return counter
+
     }
 
     fun findRecord(index: Int): Record? {
