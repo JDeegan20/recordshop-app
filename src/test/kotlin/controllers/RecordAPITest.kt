@@ -204,7 +204,7 @@ class RecordAPITest {
             assertEquals(3, populatedRecords!!.findRecord(4)!!.recordCost)
             assertEquals("Grime", populatedRecords!!.findRecord(4)!!.recordGenre)
 
-            //update note 5 with new information and ensure contents updated successfully
+
             assertTrue(populatedRecords!!.updateRecord(4, Record("Boy in Da Corner", 30, "Grime", true)))
             assertEquals("Boy in Da Corner", populatedRecords!!.findRecord(4)!!.recordName)
             assertEquals(30, populatedRecords!!.findRecord(4)!!.recordCost)
