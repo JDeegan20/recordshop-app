@@ -319,4 +319,37 @@ class RecordAPITest {
         }
     }
 
+
+    @Nested
+    inner class CountingMethods {
+
+        @Test
+        fun numberOfRecordsCalculatedCorrectly() {
+            assertEquals(5, populatedRecords!!.numberOfRecords())
+            assertEquals(0, emptyRecords!!.numberOfRecords())
+        }
+
+        @Test
+        fun numberOfOwnedRecordsCalculatedCorrectly() {
+            assertEquals(2, populatedRecords!!.numberOfOwnedRecords())
+            assertEquals(0, emptyRecords!!.numberOfOwnedRecords())
+        }
+
+        @Test
+        fun numberOfActiveRecordsCalculatedCorrectly() {
+            assertEquals(3, populatedRecords!!.numberOfActiveRecords())
+            assertEquals(0, emptyRecords!!.numberOfActiveRecords())
+        }
+
+        @Test
+        fun numberOfNotesByPriorityCalculatedCorrectly() {
+            assertEquals(1, populatedRecords!!.numberOfRecordsByCost(1))
+            assertEquals(0, populatedRecords!!.numberOfRecordsByCost(2))
+            assertEquals(1, populatedRecords!!.numberOfRecordsByCost(3))
+            assertEquals(2, populatedRecords!!.numberOfRecordsByCost(4))
+            assertEquals(1, populatedRecords!!.numberOfRecordsByCost(5))
+            assertEquals(0, populatedRecords!!.numberOfRecordsByCost(1))
+        }
+    }
+
 }
