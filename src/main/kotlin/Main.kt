@@ -1,17 +1,20 @@
 import controllers.RecordAPI
 import models.Record
 import mu.KotlinLogging
+import persistence.JSONSerializer
+import persistence.XMLSerializer
 import utils.ScannerInput
 import utils.ScannerInput.readNextInt
 import utils.ScannerInput.readNextLine
+import java.io.File
 
 import java.lang.System.exit
 
 
 private val logger = KotlinLogging.logger {}
 
-private val recordAPI = RecordAPI()
-
+//private val recordAPI = RecordAPI(XMLSerializer(File("records.xml")))
+private val recordAPI = RecordAPI(JSONSerializer(File("records.json")))
 fun main(args: Array<String>) {
     runMenu()
 }
@@ -107,4 +110,20 @@ fun deleteRecord(){
 fun exitApp(){
     logger.info { "exitApp() function invoked" }
     exit(0)
+}
+
+fun save() {
+    try {
+        recordAPI.store()
+    } catch (e: Exception) {
+        System.err.println("Error writing to file: $e")
+    }
+}
+
+fun load() {
+    try {
+        recordAPI.load()
+    } catch (e: Exception) {
+        System.err.println("Error reading from file: $e")
+    }
 }

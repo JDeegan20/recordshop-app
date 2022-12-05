@@ -1,7 +1,11 @@
 package controllers
 
 import models.Record
-class RecordAPI {
+import persistence.Serializer
+
+class RecordAPI (serializerType: Serializer){
+    private var serializer: Serializer = serializerType
+
     private var records = ArrayList<Record>()
 
     fun add(record: Record): Boolean {
@@ -137,6 +141,17 @@ class RecordAPI {
 
     fun isValidIndex(index: Int) :Boolean{
         return isValidListIndex(index, records);
+    }
+
+
+    @Throws(Exception::class)
+    fun load() {
+        records = serializer.read() as ArrayList<Record>
+    }
+
+    @Throws(Exception::class)
+    fun store() {
+        serializer.write(records)
     }
 
 }
