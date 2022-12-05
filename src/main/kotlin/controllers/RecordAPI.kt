@@ -42,17 +42,10 @@ class RecordAPI (serializerType: Serializer){
         return false
     }
 
-    fun listAllRecords(): String {
-        return if (records.isEmpty()) {
-            "No records stored"
-        } else {
-            var listOfRecords = ""
-            for (i in records.indices) {
-                listOfRecords += "${i}: ${records[i]} \n"
-            }
-            listOfRecords
-        }
-    }
+    fun listAllRecords(): String =
+        if  (records.isEmpty()) "No records stored"
+        else records.joinToString (separator = "\n") { record ->
+            records.indexOf(record).toString() + ": " + record.toString() }
 
     fun listActiveRecords(): String {
         return if (numberOfActiveRecords() == 0) {
