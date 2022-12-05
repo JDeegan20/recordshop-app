@@ -42,64 +42,25 @@ class RecordAPI (serializerType: Serializer){
         return false
     }
 
-    fun listAllRecords(): String {
-        return if (records.isEmpty()) {
-            "No records stored"
-        } else {
-            var listOfRecords = ""
-            for (i in records.indices) {
-                listOfRecords += "${i}: ${records[i]} \n"
-            }
-            listOfRecords
-        }
-    }
+    fun listAllRecords(): String =
+        if (records.isEmpty())  "No records stored"
+        else formatListString(records)
 
-    fun listActiveRecords(): String {
-        return if (numberOfActiveRecords() == 0) {
-            "No active records are stored"
-        } else {
-            var listOfActiveRecords = ""
-            for (record in records) {
-                if (!record.isRecordOwned) {
-                    listOfActiveRecords += "${records.indexOf(record)}: $record \n"
-                }
-            }
-            listOfActiveRecords
-        }
-    }
+    fun listActiveRecords(): String =
+        if (numberOfActiveRecords() == 0) "No active records stored"
+        else formatListString(records.filter{ record -> !record.isRecordOwned })
 
-    fun listOwnedRecords(): String {
-        return if (numberOfOwnedRecords() == 0) {
-            "No owned records are stored"
-        } else {
-            var listOfOwnedRecords = ""
-            for (record in records) {
-                if (record.isRecordOwned) {
-                    listOfOwnedRecords += "${records.indexOf(record)}: $record \n"
-                }
-            }
-            listOfOwnedRecords
+    fun listOwnedRecords(): String =
+        if (numberOfOwnedRecords() == 0) "No owned records stored"
+        else formatListString(records.filter{ record -> record.isRecordOwned })
+
+    fun listRecordsBySelectedCost(cost: Int): String =
+        if (records.isEmpty()) "No records stored"
+        else {
+            val listOfRecords = formatListString(records.filter{ record -> record.recordCost == cost})
+            if (listOfRecords.equals("")) "No records with a cost of: $cost"
+            else "${numberOfRecordsByCost(cost)} records with cost $cost: $listOfRecords"
         }
-    }
-    fun listRecordsBySelectedCost(cost: Int): String {
-        return if (records.isEmpty()) {
-            "No records "
-        } else {
-            var listOfRecords = ""
-            for (i in records.indices) {
-                if (records[i].recordCost == cost) {
-                    listOfRecords +=
-                        """$i: ${records[i]}
-                        """.trimIndent()
-                }
-            }
-            if (listOfRecords.equals("")) {
-                "No records with cost: $cost"
-            } else {
-                "${numberOfRecordsByCost(cost)} records of cost $cost: $listOfRecords"
-            }
-        }
-    }
     fun findRecord(index: Int): Record? {
         return if (isValidListIndex(index, records)) {
             records[index]
@@ -134,5 +95,12 @@ class RecordAPI (serializerType: Serializer){
     fun store() {
         serializer.write(records)
     }
+
+
+
+    private fun formatListString(recordsToFormat : List<Record>) : String =
+        recordsToFormat
+            .joinToString (separator = "\n") { record ->
+                records.indexOf(record).toString() + ": " + record.toString() }
 
 }

@@ -135,7 +135,7 @@ class RecordAPITest {
         }
 
         @Test
-        fun `listNotesBySelectedCost returns No Records when ArrayList is empty`() {
+        fun `listRecordsBySelectedCost returns No Records when ArrayList is empty`() {
             assertEquals(0, emptyRecords!!.numberOfRecords())
             assertTrue(emptyRecords!!.listRecordsBySelectedCost(1).lowercase().contains("no records")
             )
