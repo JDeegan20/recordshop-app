@@ -215,6 +215,29 @@ class RecordAPITest {
             assertEquals(30, populatedRecords!!.findRecord(4)!!.recordCost)
             assertEquals("Electronic", populatedRecords!!.findRecord(4)!!.recordGenre)
         }
+
+        @Nested
+        inner class OwnRecords {
+            @Test
+            fun `saying you own a record that does not exist returns false`(){
+                assertFalse(populatedRecords!!.ownRecord(6))
+                assertFalse(populatedRecords!!.ownRecord(-1))
+                assertFalse(emptyRecords!!.ownRecord(0))
+            }
+
+            @Test
+            fun `saying you own a record that is already owned returns false`(){
+                assertTrue(populatedRecords!!.findRecord(2)!!.isRecordOwned)
+                assertFalse(populatedRecords!!.ownRecord(2))
+            }
+
+            @Test
+            fun `owning a record that exists returns true and records that the record is owned`() {
+                assertFalse(populatedRecords!!.findRecord(1)!!.isRecordOwned)
+                assertTrue(populatedRecords!!.ownRecord(1))
+                assertTrue(populatedRecords!!.findRecord(1)!!.isRecordOwned)
+            }
+        }
     }
 
 

@@ -30,6 +30,7 @@ fun mainMenu() : Int {
          > |   2) List all records          |
          > |   3) Update a record           |
          > |   4) Delete a record           |
+         > |   5) Own a record              |
          > ----------------------------------
          > |   0) Exit app                  |
          > ----------------------------------
@@ -45,6 +46,7 @@ fun runMenu() {
             2  -> listRecords()
             3  -> updateRecord()
             4  -> deleteRecord()
+            5  -> ownRecord ()
             0  -> exitApp()
             else -> println("Invalid option ${option}")
         }
@@ -66,7 +68,25 @@ fun addRecord(){
 }
 
 fun listRecords(){
-    println(recordAPI.listAllRecords())
+    if (recordAPI.numberOfRecords() > 0) {
+        val option = readNextInt(
+            """
+                  > --------------------------------
+                  > |   1) View ALL records          |
+                  > |   2) View ACTIVE records       |
+                  > |   3) View OWNED records        |
+                  > --------------------------------
+         > ==>> """.trimMargin(">"))
+
+        when (option) {
+            1 -> listAllRecords();
+            2 -> listActiveRecords();
+            3 -> listOwnedRecords();
+            else -> println("Invalid option entered: " + option);
+        }
+    } else {
+        println("Option Invalid - No records stored");
+    }
 }
 
 fun updateRecord(){
@@ -91,6 +111,19 @@ fun updateRecord(){
     }
 }
 
+fun ownRecord() {
+    listActiveRecords()
+    if (recordAPI.numberOfActiveRecords() > 0) {
+
+        val recordToOwn = readNextInt("Enter the index of the note: ")
+
+        if (recordAPI.ownRecord(recordToOwn)) {
+            println("Successful!")
+        } else {
+            println("NOT Successful")
+        }
+    }
+}
 fun deleteRecord(){
     //logger.info { "deleteRecord() function invoked" }
     listRecords()
@@ -105,6 +138,18 @@ fun deleteRecord(){
             println("Delete has not been successful")
         }
     }
+}
+
+fun listAllRecords() {
+    println(recordAPI.listAllRecords())
+}
+
+fun listActiveRecords() {
+    println(recordAPI.listActiveRecords())
+}
+
+fun listOwnedRecords() {
+    println(recordAPI.listOwnedRecords())
 }
 
 fun exitApp(){

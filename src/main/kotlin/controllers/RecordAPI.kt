@@ -31,6 +31,17 @@ class RecordAPI (serializerType: Serializer){
         return false
     }
 
+    fun ownRecord(indexToOwn: Int): Boolean {
+        if (isValidIndex(indexToOwn)) {
+            val recordToOwn = records[indexToOwn]
+            if (!recordToOwn.isRecordOwned) {
+               recordToOwn.isRecordOwned = true
+                return true
+            }
+        }
+        return false
+    }
+
     fun listAllRecords(): String {
         return if (records.isEmpty()) {
             "No records stored"
