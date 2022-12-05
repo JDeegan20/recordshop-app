@@ -32,7 +32,9 @@ fun mainMenu() : Int {
          > |   4) Delete a record           |
          > |   5) Own a record              |
          > ----------------------------------
-         > |   0) Exit app                  |
+         >    20) Save                     |   
+         >    21) Load                     |
+         >     0) Exit app                  |
          > ----------------------------------
          > ==>> """.trimMargin(">"))
 
@@ -47,6 +49,8 @@ fun runMenu() {
             3  -> updateRecord()
             4  -> deleteRecord()
             5  -> ownRecord ()
+            20 -> save()
+            21 -> load()
             0  -> exitApp()
             else -> println("Invalid option ${option}")
         }

@@ -81,33 +81,6 @@ class RecordAPI (serializerType: Serializer){
             listOfOwnedRecords
         }
     }
-
-    fun numberOfOwnedRecords(): Int {
-        var counter = 0
-        for (record in records) {
-            if (record.isRecordOwned) {
-                counter++
-            }
-        }
-        return counter
-
-    }
-
-    fun numberOfActiveRecords(): Int {
-        var counter = 0
-        for (record in records) {
-            if (!record.isRecordOwned) {
-                counter++
-            }
-        }
-        return counter
-    }
-
-    fun numberOfRecords(): Int {
-        return records.size
-    }
-
-
     fun listRecordsBySelectedCost(cost: Int): String {
         return if (records.isEmpty()) {
             "No records "
@@ -127,23 +100,20 @@ class RecordAPI (serializerType: Serializer){
             }
         }
     }
-
-    fun numberOfRecordsByCost(cost: Int): Int {
-        var counter = 0
-        for (record in records) {
-            if (record.recordCost == cost) {
-                counter++
-            }
-        }
-        return counter
-
-    }
-
     fun findRecord(index: Int): Record? {
         return if (isValidListIndex(index, records)) {
             records[index]
         } else null
     }
+
+    //refactored counting methods
+    fun numberOfOwnedRecords(): Int = records.count{record: Record -> record.isRecordOwned}
+
+    fun numberOfActiveRecords(): Int = records.count{record: Record -> !record.isRecordOwned}
+
+    fun numberOfRecords(): Int = records.size
+
+    fun numberOfRecordsByCost(cost: Int): Int = records.count { p: Record -> p.recordCost == cost }
 
 
     fun isValidListIndex(index: Int, list: List<Any>): Boolean {
