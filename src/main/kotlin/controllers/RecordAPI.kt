@@ -61,19 +61,10 @@ class RecordAPI (serializerType: Serializer){
         }
     }
 
-    fun listOwnedRecords(): String {
-        return if (numberOfOwnedRecords() == 0) {
-            "No owned records are stored"
-        } else {
-            var listOfOwnedRecords = ""
-            for (record in records) {
-                if (record.isRecordOwned) {
-                    listOfOwnedRecords += "${records.indexOf(record)}: $record \n"
-                }
-            }
-            listOfOwnedRecords
-        }
-    }
+    fun listOwnedRecords(): String =
+        if (numberOfOwnedRecords() == 0) "No owned records stored"
+        else formatListString(records.filter{ record -> record.isRecordOwned })
+
     fun listRecordsBySelectedCost(cost: Int): String {
         return if (records.isEmpty()) {
             "No records "
@@ -127,5 +118,12 @@ class RecordAPI (serializerType: Serializer){
     fun store() {
         serializer.write(records)
     }
+
+
+
+    private fun formatListString(recordsToFormat : List<Record>) : String =
+        recordsToFormat
+            .joinToString (separator = "\n") { record ->
+                records.indexOf(record).toString() + ": " + record.toString() }
 
 }
