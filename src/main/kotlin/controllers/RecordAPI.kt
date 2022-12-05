@@ -47,19 +47,9 @@ class RecordAPI (serializerType: Serializer){
         else records.joinToString (separator = "\n") { record ->
             records.indexOf(record).toString() + ": " + record.toString() }
 
-    fun listActiveRecords(): String {
-        return if (numberOfActiveRecords() == 0) {
-            "No active records are stored"
-        } else {
-            var listOfActiveRecords = ""
-            for (record in records) {
-                if (!record.isRecordOwned) {
-                    listOfActiveRecords += "${records.indexOf(record)}: $record \n"
-                }
-            }
-            listOfActiveRecords
-        }
-    }
+    fun listActiveRecords(): String =
+        if (numberOfActiveRecords() == 0) "No active records stored"
+        else formatListString(records.filter{ record -> !record.isRecordOwned })
 
     fun listOwnedRecords(): String =
         if (numberOfOwnedRecords() == 0) "No owned records stored"
