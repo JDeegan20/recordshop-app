@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Nested
 import org.junit.jupiter.api.Test
+import persistence.JSONSerializer
 import persistence.XMLSerializer
 import java.io.File
 import kotlin.test.assertEquals
@@ -250,6 +251,44 @@ class RecordAPITest {
 
             assertEquals(3, storingRecords.numberOfRecords())
             assertEquals(3, storingRecords.numberOfRecords())
+            assertEquals(storingRecords.numberOfRecords(), loadedRecords.numberOfRecords())
+            assertEquals(storingRecords.findRecord(0), loadedRecords.findRecord(0))
+            assertEquals(storingRecords.findRecord(1), loadedRecords.findRecord(1))
+            assertEquals(storingRecords.findRecord(2), loadedRecords.findRecord(2))
+        }
+
+        @Test
+        fun `saving and loading an empty collection in JSON doesn't crash app`() {
+
+            val storingRecords = RecordAPI(JSONSerializer(File("records.json")))
+            storingRecords.store()
+
+
+            val loadedRecords = RecordAPI(JSONSerializer(File("records.json")))
+            loadedRecords.load()
+
+
+            assertEquals(0, storingRecords.numberOfRecords())
+            assertEquals(0, loadedRecords.numberOfRecords())
+            assertEquals(storingRecords.numberOfRecords(), loadedRecords.numberOfRecords())
+        }
+
+        @Test
+        fun `saving and loading an loaded collection in JSON doesn't loose data`() {
+
+            val storingRecords = RecordAPI(JSONSerializer(File("records.json")))
+            storingRecords.add(michaelJackson!!)
+            storingRecords.add(pinkFloyd!!)
+            storingRecords.add(dizzeeRascal!!)
+            storingRecords.store()
+
+
+            val loadedRecords = RecordAPI(JSONSerializer(File("records.json")))
+            loadedRecords.load()
+
+
+            assertEquals(3, storingRecords.numberOfRecords())
+            assertEquals(3, loadedRecords.numberOfRecords())
             assertEquals(storingRecords.numberOfRecords(), loadedRecords.numberOfRecords())
             assertEquals(storingRecords.findRecord(0), loadedRecords.findRecord(0))
             assertEquals(storingRecords.findRecord(1), loadedRecords.findRecord(1))
