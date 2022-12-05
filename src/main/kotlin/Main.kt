@@ -1,6 +1,7 @@
 import controllers.RecordAPI
 import models.Record
 import mu.KotlinLogging
+import persistence.JSONSerializer
 import persistence.XMLSerializer
 import utils.ScannerInput
 import utils.ScannerInput.readNextInt
@@ -12,8 +13,8 @@ import java.lang.System.exit
 
 private val logger = KotlinLogging.logger {}
 
-private val recordAPI = RecordAPI(XMLSerializer(File("records.xml")))
-
+//private val recordAPI = RecordAPI(XMLSerializer(File("records.xml")))
+private val recordAPI = RecordAPI(JSONSerializer(File("records.json")))
 fun main(args: Array<String>) {
     runMenu()
 }
