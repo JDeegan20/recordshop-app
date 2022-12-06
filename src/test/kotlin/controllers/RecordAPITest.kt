@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test
 import persistence.JSONSerializer
 import persistence.XMLSerializer
 import java.io.File
+import java.util.*
 import kotlin.test.assertEquals
 
 class RecordAPITest {
@@ -171,8 +172,45 @@ class RecordAPITest {
             assertFalse(cost4String.contains("Daft Punk"))
             assertFalse(cost4String.contains("Pink Floyd"))
         }
+        @Test
+        fun `listRecordsBySelectedGenre returns No Records when ArrayList is empty`() {
+            assertEquals(0, emptyRecords!!.numberOfRecords())
+            assertTrue(emptyRecords!!.listRecordsBySelectedGenre("Pop").lowercase().contains("no records")
+            )
+        }
+        @Test
+        fun `listRecordsBySelectedGenre returns no records when no records of that genre exist`() {
+            assertEquals(5, populatedRecords!!.numberOfRecords())
+            val genre2String = populatedRecords!!.listRecordsBySelectedGenre("Punk").lowercase()
+            assertTrue(genre2String.contains("no records"))
+            assertTrue(genre2String.contains("2"))
+        }
 
+        @Test
+        fun `listRecordsBySelectedGenre returns all records that match that genre when records of that genre exist`() {
+            assertEquals(5, populatedRecords!!.numberOfRecords())
+            val genre1String = populatedRecords!!.listRecordsBySelectedGenre("Punk").lowercase()
+            assertTrue(genre1String.contains("Rock"))
+            assertTrue(genre1String.contains("Punk"))
+            assertTrue(genre1String.contains("Rap"))
+            assertFalse(genre1String.contains("Electronic"))
+            assertFalse(genre1String.contains("Grime"))
+            assertFalse(genre1String.contains("Trap"))
+            assertFalse(genre1String.contains("Metal"))
+
+
+            val genre4String = populatedRecords!!.listRecordsBySelectedGenre("Pop").lowercase(Locale.getDefault())
+            assertTrue(genre4String.contains("Rock"))
+            assertTrue(genre4String.contains("Punk"))
+            assertFalse(genre4String.contains("Rap"))
+            assertTrue(genre4String.contains("Electronic"))
+            assertTrue(genre4String.contains("Grime"))
+            assertFalse(genre4String.contains("Trap"))
+            assertFalse(genre4String.contains("Metal"))
+        }
     }
+
+
 
     @Nested
     inner class DeleteRecords {
@@ -342,7 +380,7 @@ class RecordAPITest {
         }
 
         @Test
-        fun numberOfNotesByPriorityCalculatedCorrectly() {
+        fun numberOfRecordsByCostCalculatedCorrectly() {
             assertEquals(1, populatedRecords!!.numberOfRecordsByCost(1))
             assertEquals(0, populatedRecords!!.numberOfRecordsByCost(2))
             assertEquals(1, populatedRecords!!.numberOfRecordsByCost(3))
@@ -350,6 +388,17 @@ class RecordAPITest {
             assertEquals(1, populatedRecords!!.numberOfRecordsByCost(5))
             assertEquals(0, populatedRecords!!.numberOfRecordsByCost(1))
         }
+        @Test
+        fun numberOfRecordsByGenreCalculatedCorrectly() {
+            assertEquals(1, populatedRecords!!.numberOfRecordsByGenre("Funk"))
+            assertEquals(5, populatedRecords!!.numberOfRecordsByGenre("Hip-Hop"))
+            assertEquals(3, populatedRecords!!.numberOfRecordsByGenre("Soft Rock"))
+            assertEquals(2, populatedRecords!!.numberOfRecordsByGenre("Death Metal"))
+            assertEquals(1, populatedRecords!!.numberOfRecordsByGenre("Electronic"))
+            assertEquals(8, emptyRecords!!.numberOfRecordsByGenre("Opera"))
+        }
+
+
     }
 
 
@@ -387,6 +436,41 @@ class RecordAPITest {
             assertTrue(searchResults.contains("Thriller"))
             assertFalse(searchResults.contains("Boy in da Corner"))
         }
+
+        @Test
+        fun `search records by genre returns no records when no records with that genre exist`() {
+
+            assertEquals(5, populatedRecords!!.numberOfRecords())
+            val searchResults = populatedRecords!!.searchByGenre("no results expected")
+            assertTrue(searchResults.isEmpty())
+
+
+            assertEquals(0, emptyRecords!!.numberOfRecords())
+            assertTrue(emptyRecords!!.searchByGenre("").isEmpty())
+        }
+
+        @Test
+        fun `search records by genre returns records when records with that genre exist`() {
+            assertEquals(5, populatedRecords!!.numberOfRecords())
+
+            var searchResults = populatedRecords!!.searchByGenre("Rumours")
+            assertTrue(searchResults.contains("Rumours"))
+            assertFalse(searchResults.contains("Thriller"))
+
+            searchResults = populatedRecords!!.searchByGenre("Thriller")
+            assertTrue(searchResults.contains("Thriller"))
+            assertFalse(searchResults.contains("Discovery"))
+            assertFalse(searchResults.contains("Boy in da Corner"))
+
+
+            searchResults = populatedRecords!!.searchByGenre("th")
+            assertFalse(searchResults.contains("Rumours"))
+            assertTrue(searchResults.contains("Thriller"))
+            assertFalse(searchResults.contains("Boy in da Corner"))
+        }
+
+
+
     }
 
 }
