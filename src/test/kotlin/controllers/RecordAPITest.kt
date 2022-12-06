@@ -352,4 +352,43 @@ class RecordAPITest {
         }
     }
 
+
+    @Nested
+    inner class SearchMethods {
+
+        @Test
+        fun `search records by name returns no records when no records with that name exist`() {
+
+            assertEquals(5, populatedRecords!!.numberOfRecords())
+            val searchResults = populatedRecords!!.searchByName("no results expected")
+            assertTrue(searchResults.isEmpty())
+
+
+            assertEquals(0, emptyRecords!!.numberOfRecords())
+            assertTrue(emptyRecords!!.searchByName("").isEmpty())
+        }
+
+        @Test
+        fun `search records by name returns records when records with that name exist`() {
+            assertEquals(5, populatedRecords!!.numberOfRecords())
+
+            var searchResults = populatedRecords!!.searchByName("Rumours")
+            assertTrue(searchResults.contains("Rumours"))
+            assertFalse(searchResults.contains("Thriller"))
+
+            searchResults = populatedRecords!!.searchByName("Album")
+            assertTrue(searchResults.contains("Rumours"))
+            assertTrue(searchResults.contains("Thriller"))
+            assertFalse(searchResults.contains("Boy in da Corner"))
+
+
+            searchResults = populatedRecords!!.searchByName("alBuM")
+            assertTrue(searchResults.contains("Rumours"))
+            assertTrue(searchResults.contains("Thriller"))
+            assertFalse(searchResults.contains("Boy in da Corner"))
+        }
+    }
+
 }
+
+
