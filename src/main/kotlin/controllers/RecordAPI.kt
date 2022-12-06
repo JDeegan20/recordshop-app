@@ -61,6 +61,14 @@ class RecordAPI (serializerType: Serializer){
             if (listOfRecords.equals("")) "No records with a cost of: $cost"
             else "${numberOfRecordsByCost(cost)} records with cost $cost: $listOfRecords"
         }
+
+    fun listRecordsBySelectedGenre(genre: String): String =
+        if (records.isEmpty()) "No records stored"
+        else {
+            val listOfRecords = formatListString(records.filter{ record -> record.recordGenre == genre})
+            if (listOfRecords.equals("")) "No records with genre: $genre"
+            else "${numberOfRecordsByGenre(genre)} records with genre $genre: $listOfRecords"
+        }
     fun findRecord(index: Int): Record? {
         return if (isValidListIndex(index, records)) {
             records[index]
@@ -76,10 +84,12 @@ class RecordAPI (serializerType: Serializer){
 
     fun numberOfRecordsByCost(cost: Int): Int = records.count { p: Record -> p.recordCost == cost }
 
+    fun numberOfRecordsByGenre(genre: String): Int = records.count { p: Record -> p.recordGenre == genre}
 
     fun searchByName(searchString : String) =
         formatListString(records.filter { record -> record.recordName.contains(searchString, ignoreCase = true)})
-
+    fun searchByGenre(searchString : String) =
+        formatListString(records.filter { record -> record.recordGenre.contains(searchString, ignoreCase = true)})
     fun isValidListIndex(index: Int, list: List<Any>): Boolean {
         return (index >= 0 && index < list.size)
     }

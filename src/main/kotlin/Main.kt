@@ -32,6 +32,7 @@ fun mainMenu() : Int {
          > |   4) Delete a record           |
          > |   5) Own a record              |
          > |   6) Search a record           |
+         > |   7) Search by Genre           |
          > ----------------------------------
          >    20) Save                      |   
          >    21) Load                      |
@@ -51,6 +52,7 @@ fun runMenu() {
             4  -> deleteRecord()
             5  -> ownRecord ()
             6  -> searchRecords()
+            7  -> searchByGenre()
             20 -> save()
             21 -> load()
             0  -> exitApp()
@@ -140,6 +142,17 @@ fun searchRecords() {
         println(searchResults)
     }
 }
+
+fun searchByGenre() {
+    val searchGenre = readNextLine("Enter the genre to search by: ")
+    val searchResults = recordAPI.searchByGenre(searchGenre)
+    if (searchResults.isEmpty()) {
+        println("No records found")
+    } else {
+        println(searchResults)
+    }
+}
+
 
 
 fun deleteRecord(){
