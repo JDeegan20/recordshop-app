@@ -42,6 +42,7 @@ class RecordAPI (serializerType: Serializer){
         return false
     }
 
+    //listing
     fun listAllRecords(): String =
         if (records.isEmpty())  "No records stored"
         else formatListString(records)
@@ -69,11 +70,6 @@ class RecordAPI (serializerType: Serializer){
             if (listOfRecords.equals("")) "No records with genre: $genre"
             else "${numberOfRecordsByGenre(genre)} records with genre $genre: $listOfRecords"
         }
-    fun findRecord(index: Int): Record? {
-        return if (isValidListIndex(index, records)) {
-            records[index]
-        } else null
-    }
 
     //refactored counting methods
     fun numberOfOwnedRecords(): Int = records.count{record: Record -> record.isRecordOwned}
@@ -86,10 +82,36 @@ class RecordAPI (serializerType: Serializer){
 
     fun numberOfRecordsByGenre(genre: String): Int = records.count { p: Record -> p.recordGenre == genre}
 
+
+    //search
+
+    fun findRecord(index: Int): Record? {
+        return if (isValidListIndex(index, records)) {
+            records[index]
+        } else null
+    }
     fun searchByName(searchString : String) =
         formatListString(records.filter { record -> record.recordName.contains(searchString, ignoreCase = true)})
     fun searchByGenre(searchString : String) =
         formatListString(records.filter { record -> record.recordGenre.contains(searchString, ignoreCase = true)})
+
+    fun searchSongByName(searchString: String): String {
+        return if (numberOfRecords() == 0) "No records stored"
+        else {
+            var listOfRecords = ""
+            for (record in records) {
+                for (song in record.songs) {
+                    if (song.songName.contains(searchString, ignoreCase = true)) {
+                        listOfRecords += "${record.recordName} \n\t${song}\n"
+                    }
+                }
+            }
+            if (listOfRecords == "") "No songs found for: $searchString"
+            else listOfRecords
+        }
+    }
+
+
     fun isValidListIndex(index: Int, list: List<Any>): Boolean {
         return (index >= 0 && index < list.size)
     }
@@ -109,11 +131,15 @@ class RecordAPI (serializerType: Serializer){
         serializer.write(records)
     }
 
-
-
     private fun formatListString(recordsToFormat : List<Record>) : String =
         recordsToFormat
             .joinToString (separator = "\n") { record ->
                 records.indexOf(record).toString() + ": " + record.toString() }
 
 }
+
+
+
+
+
+

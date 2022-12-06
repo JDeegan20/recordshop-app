@@ -1,5 +1,6 @@
 import controllers.RecordAPI
 import models.Record
+import models.Song
 import mu.KotlinLogging
 import persistence.JSONSerializer
 import persistence.XMLSerializer
@@ -21,23 +22,29 @@ fun main(args: Array<String>) {
 
 fun mainMenu() : Int {
     return ScannerInput.readNextInt(""" 
-         > ----------------------------------
-         > |       Welcome to Josh's        |
-         > |          Record Shop           |
-         > ----------------------------------
-         > | Record Menu                    |
-         > |   1) Add a record              |
-         > |   2) List all records          |
-         > |   3) Update a record           |
-         > |   4) Delete a record           |
-         > |   5) Own a record              |
-         > |   6) Search a record           |
-         >     7) Search by Genre           |
-         > ----------------------------------
-         >    20) Save                      |   
-         >    21) Load                      |
-         >     0) Exit app                  |
-         > ----------------------------------
+         > -----------------------------------------------------
+         > |                Welcome to Josh's                  |
+         > |                    Record Shop                    |
+         > -----------------------------------------------------
+         > | Record Menu                                       |
+         > |   1) Add a record                                 |
+         > |   2) List all records                             |
+         > |   3) Update a record                              |
+         > |   4) Delete a record                              |
+         > |   5) Own a record                                 |
+         > |   6) Search a record                              |
+         > |   7) Search by Genre                              |
+         > -----------------------------------------------------  
+         > | Song Menu                                         | 
+         > |   8) Add song to a record                         |
+         > |   9) Update song contents on a record             |
+         > |  10) Delete song from a record                    |
+         > |  11) Search for a song                            |
+         > -----------------------------------------------------  
+         > |  20) Save                                         |   
+         > |  21) Load                                         |
+         > |   0) Exit app                                     |
+         > -----------------------------------------------------
          > ==>> """.trimMargin(">"))
 
 }
@@ -53,6 +60,10 @@ fun runMenu() {
             5  -> ownRecord ()
             6  -> searchRecords()
             7  -> searchRecordsByGenre()
+            8  -> addSongToRecord()
+            9 -> updateSongNameInRecord ()
+            10 -> deleteASong ()
+            11 -> searchSongs ()
             20 -> save()
             21 -> load()
             0  -> exitApp()
@@ -97,6 +108,19 @@ fun listRecords(){
     }
 }
 
+fun listAllRecords() {
+    println(recordAPI.listAllRecords())
+}
+
+fun listActiveRecords() {
+    println(recordAPI.listActiveRecords())
+}
+
+fun listOwnedRecords() {
+    println(recordAPI.listOwnedRecords())
+}
+
+
 fun updateRecord(){
     listRecords()
     if (recordAPI.numberOfRecords() > 0) {
@@ -123,7 +147,7 @@ fun ownRecord() {
     listActiveRecords()
     if (recordAPI.numberOfActiveRecords() > 0) {
 
-        val recordToOwn = readNextInt("Enter the index of the note: ")
+        val recordToOwn = readNextInt("Enter the index of the record: ")
 
         if (recordAPI.ownRecord(recordToOwn)) {
             println("Successful!")
@@ -155,12 +179,11 @@ fun searchRecordsByGenre() {
 
 
 fun deleteRecord(){
-    //logger.info { "deleteRecord() function invoked" }
     listRecords()
     if (recordAPI.numberOfRecords() > 0) {
-        //only ask the user to choose the note to delete if notes exist
+
         val indexToDelete = readNextInt("Enter the index of the record to delete: ")
-        //pass the index of the note to NoteAPI for deleting and check for success.
+
         val recordToDelete = recordAPI.deleteRecord(indexToDelete)
         if (recordToDelete != null) {
             println("Delete Successful! Deleted record: ${recordToDelete.recordName}")
@@ -170,18 +193,64 @@ fun deleteRecord(){
     }
 }
 
-fun listAllRecords() {
-    println(recordAPI.listAllRecords())
+
+
+// Items
+
+private fun addSongToRecord() {
+    val record: Record? = askUserToChooseActiveRecord()
+    if (record != null) {
+        if (record.addSong(Song(songName = readNextLine("\t Item Contents: "))))
+            println("Add Successful!")
+        else println("Add NOT Successful")
+    }
 }
 
-fun listActiveRecords() {
-    println(recordAPI.listActiveRecords())
+
+
+
+fun updateSongNameInRecord() {
+    val record: Record? = askUserToChooseActiveRecord()
+    if (record != null) {
+        val song: Song? = askUserToChooseSong(record)
+        if (song != null) {
+            val newName = readNextLine("Enter new name: ")
+            if (record.update(song.songId, Song(songName = newName))) {
+                println("Song name updated")
+            } else {
+                println("Song name NOT updated")
+            }
+        } else {
+            println("Invalid song Id")
+        }
+    }
 }
 
-fun listOwnedRecords() {
-    println(recordAPI.listOwnedRecords())
+fun deleteASong() {
+    val record: Record? = askUserToChooseActiveRecord()
+    if (record != null) {
+        val song: Song? = askUserToChooseSong(record)
+        if (song != null) {
+            val isDeleted = record.delete(song.songId)
+            if (isDeleted) {
+                println("Delete Successful!")
+            } else {
+                println("Delete NOT Successful")
+            }
+        }
+    }
 }
 
+
+fun searchSongs() {
+    val searchName = readNextLine("Enter the song name to search by: ")
+    val searchResults = recordAPI.searchSongByName(searchName)
+    if (searchResults.isEmpty()) {
+        println("No songs found")
+    } else {
+        println(searchResults)
+    }
+}
 fun exitApp(){
     logger.info { "exitApp() function invoked" }
     exit(0)
@@ -202,3 +271,33 @@ fun load() {
         System.err.println("Error reading from file: $e")
     }
 }
+
+private fun askUserToChooseActiveRecord(): Record? {
+    listActiveRecords()
+    if (recordAPI.numberOfActiveRecords() > 0) {
+        val record = recordAPI.findRecord(readNextInt("\nEnter the id of the record: "))
+        if (record != null) {
+            if (record.isRecordOwned) {
+                println("Record is NOT Active, it is Owned")
+            } else {
+                return record
+            }
+        } else {
+            println("Record id is not valid")
+        }
+    }
+    return null
+}
+
+private fun askUserToChooseSong(record: Record): Song? {
+    if (record.numberOfSongs() > 0) {
+        print(record.listSongs())
+        return record.findOne(readNextInt("\nEnter the id of the song: "))
+    }
+    else{
+        println ("No songs for chosen record")
+        return null
+    }
+}
+
+
