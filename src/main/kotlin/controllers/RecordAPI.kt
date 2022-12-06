@@ -77,6 +77,9 @@ class RecordAPI (serializerType: Serializer){
     fun numberOfRecordsByCost(cost: Int): Int = records.count { p: Record -> p.recordCost == cost }
 
 
+    fun searchByName(searchString : String) =
+        formatListString(records.filter { record -> record.recordName.contains(searchString, ignoreCase = true)})
+
     fun isValidListIndex(index: Int, list: List<Any>): Boolean {
         return (index >= 0 && index < list.size)
     }

@@ -31,9 +31,10 @@ fun mainMenu() : Int {
          > |   3) Update a record           |
          > |   4) Delete a record           |
          > |   5) Own a record              |
+         > |   6) Search a record           |
          > ----------------------------------
-         >    20) Save                     |   
-         >    21) Load                     |
+         >    20) Save                      |   
+         >    21) Load                      |
          >     0) Exit app                  |
          > ----------------------------------
          > ==>> """.trimMargin(">"))
@@ -49,6 +50,7 @@ fun runMenu() {
             3  -> updateRecord()
             4  -> deleteRecord()
             5  -> ownRecord ()
+            6  -> searchRecords()
             20 -> save()
             21 -> load()
             0  -> exitApp()
@@ -128,6 +130,18 @@ fun ownRecord() {
         }
     }
 }
+
+fun searchRecords() {
+    val searchName = readNextLine("Enter the name to search by: ")
+    val searchResults = recordAPI.searchByName(searchName)
+    if (searchResults.isEmpty()) {
+        println("No records found")
+    } else {
+        println(searchResults)
+    }
+}
+
+
 fun deleteRecord(){
     //logger.info { "deleteRecord() function invoked" }
     listRecords()
