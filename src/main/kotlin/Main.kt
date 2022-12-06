@@ -30,8 +30,8 @@ fun mainMenu() : Int {
          > |   2) List all records          |
          > |   3) Update a record           |
          > |   4) Delete a record           |
-         > |   5) Own a record?             |
-         > |   6) Search for a record       |
+         > |   5) Own a record              |
+         > |   6) Search a record           |
          > ----------------------------------
          >    20) Save                      |   
          >    21) Load                      |
